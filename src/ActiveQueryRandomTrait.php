@@ -4,7 +4,7 @@ namespace vm\core;
 
 /**
  * Class ActiveQueryRandomTrait
- * @package yii2vm\db
+ * @package vm\core
  */
 trait ActiveQueryRandomTrait
 {

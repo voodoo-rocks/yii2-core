@@ -11,6 +11,7 @@ use Yii;
 use yii\base\Arrayable;
 use yii\base\Exception;
 use yii\base\InvalidParamException;
+use yii\db\ActiveRecord;
 use yii\db\BaseActiveRecord;
 use yii\helpers\ArrayHelper;
 
@@ -107,20 +108,29 @@ class ArrayObject implements Arrayable, ArrayAccess
 
     /**
      * @param       $class
-     * @param array $params
+     * @param array $attributes
      *
      * @return object
-     * @throws \yii\base\Exception
+     * @throws Exception
      * @throws \yii\base\InvalidConfigException
+     *
      */
-    public function createModel($class, $params = [])
+    public function createModel($class, $attributes = [])
     {
-        $model = Yii::createObject($class, $params);
+        /** @var ActiveRecord $model */
+        $model = Yii::createObject($class);
+
         if (!$model || !is_a($model, BaseActiveRecord::className())) {
             throw new Exception('This class is not supported for creating from ArrayObject. Only subclasses of yii\base\Model are supported');
         }
 
-        $model->setAttributes($this->data, true);
+        if ($attributes && !empty($attributes)) {
+            foreach ($attributes as $attribute) {
+                $model->setAttribute($attribute, $this->{$attribute});
+            }
+        } else {
+            $model->setAttributes($this->getValues(), true);
+        }
 
         return $model;
     }
