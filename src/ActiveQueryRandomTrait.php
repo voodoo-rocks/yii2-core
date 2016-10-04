@@ -1,6 +1,7 @@
 <?php
 
 namespace vm\core;
+use yii\db\ActiveQuery;
 
 /**
  * Class ActiveQueryRandomTrait
