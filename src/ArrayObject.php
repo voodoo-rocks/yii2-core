@@ -4,7 +4,7 @@
  * @link      https://voodoo.rocks
  * @license   http://opensource.org/licenses/MIT The MIT License (MIT)
  */
-namespace vm\core;
+namespace vr\core;
 
 use ArrayAccess;
 use Yii;
@@ -17,7 +17,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Class ArrayObject
- * @package yii2vm\components
+ * @package vr\core
  */
 class ArrayObject implements Arrayable, ArrayAccess
 {

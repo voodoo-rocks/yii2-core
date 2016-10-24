@@ -1,11 +1,13 @@
 <?php
 
-namespace vm\core;
+namespace vr\core;
+
 use yii\db\ActiveQuery;
 
 /**
  * Class ActiveQueryRandomTrait
- * @package vm\core
+ * @package vr\core
+ * @deprecated
  */
 trait ActiveQueryRandomTrait
 {

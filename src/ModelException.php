@@ -4,14 +4,14 @@
  * @link      https://voodoo.rocks
  * @license   http://opensource.org/licenses/MIT The MIT License (MIT)
  */
-namespace vm\core;
+namespace vr\core;
 
 use yii\base\Exception;
 use yii\base\Model;
 
 /**
  * Class ModelException
- * @package yii2vm\base
+ * @package vr\core
  */
 class ModelException extends Exception
 {
