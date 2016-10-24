@@ -1,5 +1,5 @@
 <?php
-namespace vm\core;
+namespace vr\core;
 
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
 
 /**
  * Class ActiveQueryTrait
- * @package vm\core
+ * @package vr\core
  */
 trait ActiveQueryTrait
 {
