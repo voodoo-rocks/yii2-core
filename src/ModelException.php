@@ -16,23 +16,24 @@ use yii\base\Model;
 class ModelException extends Exception
 {
     /**
-     * @var null|Model
-     */
-    public $entity = null;
-
-    /**
      * @param Model $entity
+     * @param bool|int $preserveAttributes
      */
-    public function __construct(Model $entity)
+    public function __construct(Model $entity, $preserveAttributes = YII_DEBUG)
     {
-        $messages     = [];
-        $this->entity = $entity;
+        $messages = [];
 
         foreach ($entity->errors as $attribute => $errors) {
-            $messages[] = implode(' : ', [
-                'attribute' => $attribute,
-                'message'   => implode(', ', (array)$errors),
-            ]);
+
+            if ($preserveAttributes) {
+                $messages[] = implode(' : ', [
+                    'attribute' => $attribute,
+                    'message' => implode(', ', (array)$errors),
+                ]);
+            } else {
+                $messages[] = implode(', ', (array)$errors);
+            }
+
         }
 
         parent::__construct(implode(PHP_EOL, $messages));
