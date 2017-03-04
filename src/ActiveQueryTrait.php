@@ -43,7 +43,7 @@ trait ActiveQueryTrait
     /**
      * @param $condition
      *
-     * @return mixed
+     * @return self
      * @throws InvalidConfigException
      */
     public function identifiedBy($condition)
@@ -54,8 +54,10 @@ trait ActiveQueryTrait
 
             $primaryKey = call_user_func([$this->modelClass, 'primaryKey']);
 
+            $table = call_user_func([$this->modelClass, 'tableName']);
+
             if (isset($primaryKey[0])) {
-                $condition = [$primaryKey[0] => $condition];
+                $condition = [$table . '.' . $primaryKey[0] => $condition];
             } else {
                 throw new InvalidConfigException('"' . get_called_class() . '" must have a primary key.');
             }
