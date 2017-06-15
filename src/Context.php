@@ -1,19 +1,18 @@
 <?php
 /**
  * Created by PhpStorm.
- * User: alex
- * Date: 28/10/2016
- * Time: 11:43
+ * User: Alex
+ * Date: 15/06/2017
+ * Time: 15:30
  */
 
 namespace vr\core;
 
 /**
- * Class Model
- * @package vr\api\components
- * @deprecated Please use [[\vr\core\Context] instead
+ * Class Context
+ * @package vr\core
  */
-class Model extends \yii\base\Model
+class Context extends \yii\base\Model
 {
     /**
      * @var
@@ -40,5 +39,4 @@ class Model extends \yii\base\Model
             ],
         ];
     }
-
 }
