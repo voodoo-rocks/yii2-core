@@ -2,33 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: Alex
- * Date: 15/06/2017
- * Time: 15:30
+ * Date: 14/07/2017
+ * Time: 12:15
  */
 
 namespace vr\core;
 
 /**
- * Class Context
+ * Class Script
  * @package vr\core
- * @deprecated Please use [[]]
  */
-class Context extends \yii\base\Model
+abstract class Script extends \yii\base\Model
 {
-    /**
-     * @var
-     */
-    public $self;
-
-    /**
-     *
-     */
-    public function init()
-    {
-        $this->self = $this;
-        parent::init();
-    }
-
     /**
      * @return array
      */
@@ -40,4 +25,9 @@ class Context extends \yii\base\Model
             ],
         ];
     }
+
+    /**
+     * @return bool
+     */
+    abstract public function execute(): bool;
 }
