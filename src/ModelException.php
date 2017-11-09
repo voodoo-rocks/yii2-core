@@ -4,19 +4,20 @@
  * @link      https://voodoo.rocks
  * @license   http://opensource.org/licenses/MIT The MIT License (MIT)
  */
+
 namespace vr\core;
 
-use yii\base\Exception;
 use yii\base\Model;
+use yii\base\UserException;
 
 /**
  * Class ModelException
  * @package vr\core
  */
-class ModelException extends Exception
+class ModelException extends UserException
 {
     /**
-     * @param Model $entity
+     * @param Model    $entity
      * @param bool|int $preserveAttributes
      */
     public function __construct(Model $entity, $preserveAttributes = YII_DEBUG)
@@ -28,12 +29,11 @@ class ModelException extends Exception
             if ($preserveAttributes) {
                 $messages[] = implode(' : ', [
                     'attribute' => $attribute,
-                    'message' => implode(', ', (array)$errors),
+                    'message'   => implode(', ', (array)$errors),
                 ]);
             } else {
                 $messages[] = implode(', ', (array)$errors);
             }
-
         }
 
         parent::__construct(implode(PHP_EOL, $messages));
