@@ -8,6 +8,8 @@
 
 namespace vr\core;
 
+use yii\base\UserException;
+
 /**
  * Class ErrorsException
  * @package vr\core
