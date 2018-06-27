@@ -15,6 +15,18 @@ namespace vr\core;
 class Script extends \yii\base\Model
 {
     /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => IgnoreAttributesBehaviour::className(),
+            ],
+        ];
+    }
+
+    /**
      * @var bool
      */
     public $isExecuted;
