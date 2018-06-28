@@ -2,8 +2,8 @@
 /**
  * Created by PhpStorm.
  * User: Alex
- * Date: 17/04/2018
- * Time: 09:52
+ * Date: 27/06/2018
+ * Time: 14:19
  */
 
 namespace vr\core;
@@ -24,15 +24,15 @@ class ErrorsException extends UserException
     {
         $messages = [];
 
-        foreach ($errors as $attribute => $attributeErrors) {
+        foreach ($errors as $attribute => $errors) {
 
             if ($preserveAttributes) {
-                $messages[] = implode(' : ', [
+                $messages[] = implode(': ', [
                     'attribute' => $attribute,
-                    'message'   => implode(', ', (array)$attributeErrors),
+                    'message'   => implode(', ', (array)$errors),
                 ]);
             } else {
-                $messages[] = implode(', ', (array)$attributeErrors);
+                $messages[] = implode(', ', (array)$errors);
             }
         }
 
