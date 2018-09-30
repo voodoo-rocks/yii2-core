@@ -8,12 +8,23 @@
 
 namespace vr\core;
 
+use yii\base\UserException;
+
 /**
  * Class Script
  * @package vr\core
  */
 class Script extends \yii\base\Model
 {
+    /**
+     * @var bool
+     */
+    public $isExecuted;
+    /**
+     * @var bool
+     */
+    public $oneTimeExecution = true;
+
     /**
      * @return array
      */
@@ -25,16 +36,6 @@ class Script extends \yii\base\Model
             ],
         ];
     }
-
-    /**
-     * @var bool
-     */
-    public $isExecuted;
-
-    /**
-     * @var bool
-     */
-    public $oneTimeExecution = true;
 
     /**
      * @return bool
@@ -70,7 +71,7 @@ class Script extends \yii\base\Model
      */
     protected function onExecute()
     {
-        throw new UserException('Not implemented. Please implement in inherited classes');
+        throw new \RuntimeException(get_called_class() . '::onExecute is not implemented');
     }
 
     /**
