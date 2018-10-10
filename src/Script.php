@@ -26,15 +26,18 @@ class Script extends \yii\base\Model
     public $oneTimeExecution = true;
 
     /**
+     * @param array $config
+     *
      * @return array
+     * @throws UserException
      */
-    public function behaviors()
+    public static function run(array $config)
     {
-        return [
-            [
-                'class' => IgnoreAttributesBehaviour::className(),
-            ],
-        ];
+        $script = new self($config);
+
+        $script->execute();
+
+        return $script->errors;
     }
 
     /**
@@ -72,6 +75,18 @@ class Script extends \yii\base\Model
     protected function onExecute()
     {
         throw new \RuntimeException(get_called_class() . '::onExecute is not implemented');
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => IgnoreAttributesBehaviour::className(),
+            ],
+        ];
     }
 
     /**
