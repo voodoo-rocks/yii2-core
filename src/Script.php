@@ -33,7 +33,7 @@ class Script extends \yii\base\Model
      */
     public static function run(array $config)
     {
-        $script = new self($config);
+        $script = \Yii::createObject(get_called_class(), $config);
 
         $script->execute();
 
