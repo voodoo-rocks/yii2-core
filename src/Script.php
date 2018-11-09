@@ -8,7 +8,7 @@
 
 namespace vr\core;
 
-use yii\base\UserException;
+use yii\base\InvalidCallException;
 
 /**
  * Class Script
@@ -26,26 +26,7 @@ class Script extends \yii\base\Model
     public $oneTimeExecution = true;
 
     /**
-     * @param array $config
-     *
-     * @return array
-     * @throws UserException
-     */
-    public static function run(array $config)
-    {
-        $script = \Yii::createObject(get_called_class(), $config);
-
-        $script->execute();
-
-        return $script->errors;
-    }
-
-    /**
      * @return bool
-     * @throws \Exception
-     * @throws InvalidCallException
-     * @throws InvalidArgumentException
-     * @throws UserException
      */
     public function execute(): bool
     {
@@ -69,8 +50,6 @@ class Script extends \yii\base\Model
     }
 
     /**
-     * @throws \Exception
-     * @throws UserException
      */
     protected function onExecute()
     {
@@ -84,7 +63,7 @@ class Script extends \yii\base\Model
     {
         return [
             [
-                'class' => IgnoreAttributesBehaviour::className(),
+                'class' => IgnoreAttributesBehaviour::class,
             ],
         ];
     }
