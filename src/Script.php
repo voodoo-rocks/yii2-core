@@ -25,8 +25,11 @@ class Script extends \yii\base\Model
      */
     public $oneTimeExecution = true;
 
+    public $throwExceptionOnError = false;
+
     /**
      * @return bool
+     * @throws \Exception
      */
     public function execute(): bool
     {
@@ -38,15 +41,18 @@ class Script extends \yii\base\Model
             return false;
         }
 
-        // This method especially returns void
-        $this->onExecute();
-        $this->isExecuted = true;
+        try {
+            // This method especially returns void
+            $this->onExecute();
 
-        if ($this->hasErrors()) {
-            return false;
+            $this->isExecuted = true;
+        } catch (\Exception $e) {
+            if ($this->throwExceptionOnError) {
+                throw $e;
+            }
         }
 
-        return true;
+        return !$this->hasErrors();
     }
 
     /**
