@@ -8,6 +8,7 @@
 
 namespace vr\core\validators;
 
+use vr\core\Inflector;
 use yii\helpers\ArrayHelper;
 use yii\validators\Validator;
 
@@ -20,7 +21,12 @@ class ArrayFilterValidator extends Validator
     /**
      * @var
      */
-    public $allowed;
+    public $allowed = [];
+
+    /**
+     * @var bool
+     */
+    public $variablize = true;
 
     /**
      * @param \yii\base\Model $model
@@ -29,6 +35,13 @@ class ArrayFilterValidator extends Validator
     public function validateAttribute($model, $attribute)
     {
         if (!empty($this->allowed)) {
+
+            if ($this->variablize) {
+                foreach ($this->allowed as $key => $allowed) {
+                    $this->allowed[$key] = Inflector::variablize($allowed);
+                }
+            }
+
             $model->$attribute = ArrayHelper::filter($model->$attribute, $this->allowed);
         }
     }
