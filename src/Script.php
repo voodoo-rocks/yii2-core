@@ -25,6 +25,9 @@ class Script extends \yii\base\Model
      */
     public $oneTimeExecution = true;
 
+    /**
+     * @var bool
+     */
     public $throwExceptionOnError = false;
 
     /**
@@ -37,22 +40,28 @@ class Script extends \yii\base\Model
             throw new InvalidCallException('This script cannot be executed more than once');
         }
 
-        if (!$this->validate()) {
-            return false;
-        }
-
         try {
+            if (!$this->validate()) {
+                throw new ErrorsException($this->errors);
+            }
+
             // This method especially returns void
             $this->onExecute();
 
             $this->isExecuted = true;
+
+            if ($this->hasErrors()) {
+                throw new ErrorsException($this->errors);
+            }
         } catch (\Exception $e) {
             if ($this->throwExceptionOnError) {
                 throw $e;
             }
+
+            return false;
         }
 
-        return !$this->hasErrors();
+        return true;
     }
 
     /**
