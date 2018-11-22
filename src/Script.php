@@ -53,7 +53,7 @@ class Script extends \yii\base\Model
             if ($this->hasErrors()) {
                 throw new ErrorsException($this->errors);
             }
-        } catch (\Exception $e) {
+        } catch (ErrorsException $e) {
             if ($this->throwExceptionOnError) {
                 throw $e;
             }
