@@ -28,7 +28,7 @@ class Script extends \yii\base\Model
     /**
      * @var bool
      */
-    public $throwExceptionOnError = false;
+    public $throwExceptionOnError = true;
 
     /**
      * @return bool
