@@ -15,6 +15,7 @@ use yii\validators\Validator;
 /**
  * Class AssociatedArrayValidator
  * @package app\modules\api\validators
+ * @deprecated Use [[NestedValidator]]
  */
 class AssociatedArrayValidator extends Validator
 {
