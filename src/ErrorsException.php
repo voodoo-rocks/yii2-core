@@ -18,24 +18,24 @@ class ErrorsException extends UserException
 {
     /**
      * @param array    $errors
+     * @param int      $code
      * @param bool|int $preserveAttributes
      */
-    public function __construct(array $errors, $preserveAttributes = YII_DEBUG)
+    public function __construct(array $errors, $code = 0, $preserveAttributes = YII_DEBUG)
     {
         $messages = [];
 
-        foreach ($errors as $attribute => $errors) {
-
+        foreach ($errors as $attribute => $attributeErrors) {
             if ($preserveAttributes) {
                 $messages[] = implode(': ', [
                     'attribute' => $attribute,
-                    'message'   => implode(', ', (array)$errors),
+                    'message'   => implode(', ', $attributeErrors),
                 ]);
             } else {
-                $messages[] = implode(', ', (array)$errors);
+                $messages[] = implode(', ', $attributeErrors);
             }
         }
 
-        parent::__construct(implode(PHP_EOL, $messages));
+        parent::__construct(implode(PHP_EOL, $messages), $code);
     }
 }

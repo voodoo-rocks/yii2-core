@@ -31,6 +31,11 @@ class Script extends \yii\base\Model
     public $throwExceptionOnError = true;
 
     /**
+     * @var
+     */
+    protected $returnCode;
+
+    /**
      * @return bool
      * @throws \Exception
      */
