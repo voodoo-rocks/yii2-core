@@ -8,6 +8,8 @@
 
 namespace vr\core;
 
+use yii\base\InvalidCallException;
+
 /**
  * Class Script
  * @package vr\core
@@ -15,33 +17,27 @@ namespace vr\core;
 class Script extends \yii\base\Model
 {
     /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return [
-            [
-                'class' => IgnoreAttributesBehaviour::className(),
-            ],
-        ];
-    }
-
-    /**
      * @var bool
      */
     public $isExecuted;
-
     /**
      * @var bool
      */
     public $oneTimeExecution = true;
 
     /**
+     * @var bool
+     */
+    public $throwExceptionOnError = true;
+
+    /**
+     * @var
+     */
+    protected $returnCode;
+
+    /**
      * @return bool
      * @throws \Exception
-     * @throws InvalidCallException
-     * @throws InvalidArgumentException
-     * @throws UserException
      */
     public function execute(): bool
     {
@@ -49,15 +45,24 @@ class Script extends \yii\base\Model
             throw new InvalidCallException('This script cannot be executed more than once');
         }
 
-        if (!$this->validate()) {
-            return false;
-        }
+        try {
+            if (!$this->validate()) {
+                throw new ErrorsException($this->errors);
+            }
 
-        // This method especially returns void
-        $this->onExecute();
-        $this->isExecuted = true;
+            // This method especially returns void
+            $this->onExecute();
 
-        if ($this->hasErrors()) {
+            $this->isExecuted = true;
+
+            if ($this->hasErrors()) {
+                throw new ErrorsException($this->errors);
+            }
+        } catch (ErrorsException $e) {
+            if ($this->throwExceptionOnError) {
+                throw $e;
+            }
+
             return false;
         }
 
@@ -65,12 +70,22 @@ class Script extends \yii\base\Model
     }
 
     /**
-     * @throws \Exception
-     * @throws UserException
      */
     protected function onExecute()
     {
-        throw new UserException('Not implemented. Please implement in inherited classes');
+        throw new \RuntimeException(get_called_class() . '::onExecute is not implemented');
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => IgnoreAttributesBehaviour::class,
+            ],
+        ];
     }
 
     /**

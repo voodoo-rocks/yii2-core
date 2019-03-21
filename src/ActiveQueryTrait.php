@@ -1,4 +1,5 @@
 <?php
+
 namespace vr\core;
 
 use yii\base\InvalidConfigException;
@@ -13,7 +14,12 @@ use yii\helpers\ArrayHelper;
 trait ActiveQueryTrait
 {
     /**
-     * @return $this
+     * @var
+     */
+    private $_forUpdate;
+
+    /**
+     * @return self
      */
     public function first()
     {
@@ -21,22 +27,24 @@ trait ActiveQueryTrait
 
         $primaryKey = call_user_func([$this->modelClass, 'primaryKey']);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         return $this->orderBy([
-            $primaryKey[0] => SORT_ASC
+            $primaryKey[0] => SORT_ASC,
         ])->one();
     }
 
     /**
-     * @return ActiveRecord
+     * @return self
      */
     public function last()
     {
-        /** @var ActiveQuery $this */
+        /** @var self $this */
 
         $primaryKey = call_user_func([$this->modelClass, 'primaryKey']);
 
+        /** @noinspection PhpUndefinedMethodInspection */
         return $this->orderBy([
-            $primaryKey[0] => SORT_DESC
+            $primaryKey[0] => SORT_DESC,
         ])->one();
     }
 
@@ -67,11 +75,54 @@ trait ActiveQueryTrait
     }
 
     /**
+     * @param bool $forUpdate
+     *
      * @return $this
+     */
+    public function forUpdate($forUpdate = true)
+    {
+        $this->_forUpdate = $forUpdate;
+
+        return $this;
+    }
+
+    /**
+     * @return self
      */
     public function random()
     {
-        /** @var ActiveQuery $this */
+        /** @var self $this */
         return $this->orderBy('rand()');
+    }
+
+    /**
+     * @param null $db
+     *
+     * @return \yii\db\Command
+     */
+    public function createCommand($db = null)
+    {
+        /* @var $modelClass ActiveRecord */
+        $modelClass = $this->modelClass;
+        if ($db === null) {
+            $db = $modelClass::getDb();
+        }
+
+        if ($this->sql === null) {
+            /** @noinspection PhpParamsInspection */
+            list($sql, $params) = $db->getQueryBuilder()->build($this);
+        } else {
+            $sql    = $this->sql;
+            $params = $this->params;
+        }
+
+        if ($this->_forUpdate) {
+            $sql .= ' FOR UPDATE';
+        }
+
+        $command = $db->createCommand($sql, $params);
+        $this->setCommandCache($command);
+
+        return $command;
     }
 }
