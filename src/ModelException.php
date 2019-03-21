@@ -12,7 +12,8 @@ use yii\base\UserException;
 
 /**
  * Class ModelException
- * @package vr\core
+ * @package    vr\core
+ * @deprecated Use [[ErrorsException]] instead
  */
 class ModelException extends UserException
 {
