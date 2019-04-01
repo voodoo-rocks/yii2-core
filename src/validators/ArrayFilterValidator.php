@@ -36,6 +36,7 @@ class ArrayFilterValidator extends Validator
     {
         if (empty($this->allowed)) {
             $this->allowed = $model->fields();
+            $this->allowed = array_merge($this->allowed, array_keys($model->extraFields()));
         }
 
         if (!empty($this->allowed)) {
