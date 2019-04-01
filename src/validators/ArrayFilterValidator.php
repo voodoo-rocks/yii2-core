@@ -34,6 +34,10 @@ class ArrayFilterValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
+        if (empty($this->allowed)) {
+            $this->allowed = $model->fields();
+        }
+
         if (!empty($this->allowed)) {
 
             if ($this->variablize) {
