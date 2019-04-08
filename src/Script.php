@@ -89,6 +89,14 @@ class Script extends \yii\base\Model
     }
 
     /**
+     * @return array
+     */
+    public function fields()
+    {
+        return [];
+    }
+
+    /**
      * @return bool
      */
     public function getIsExecuted(): bool
