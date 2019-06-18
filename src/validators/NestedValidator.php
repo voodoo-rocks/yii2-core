@@ -24,8 +24,14 @@ class NestedValidator extends Validator
 
     /**
      * @var bool
+     * @deprecated
      */
     public $objectize = false;
+
+    /**
+     * @var bool
+     */
+    public $objectify = false;
 
     /**
      * @inheritdoc
@@ -68,7 +74,7 @@ class NestedValidator extends Validator
         $dynamic = DynamicModel::validateData($attributes, $this->rules);
         $model->addErrors($dynamic->errors);
 
-        if ($this->objectize) {
+        if ($this->objectize || $this->objectify) {
             $model->$attribute = (object)$model->$attribute;
         }
     }
