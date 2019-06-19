@@ -29,10 +29,10 @@ class Script extends Model
     protected $returnCode;
 
     /**
-     * @return bool
+     * @return $this
      * @throws Exception
      */
-    public function execute(): bool
+    public function execute()
     {
         try {
             if (!$this->validate()) {
@@ -49,11 +49,9 @@ class Script extends Model
             if ($this->throwExceptionOnError) {
                 throw $e;
             }
-
-            return false;
         }
 
-        return true;
+        return $this;
     }
 
     /**
