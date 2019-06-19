@@ -8,23 +8,16 @@
 
 namespace vr\core;
 
-use yii\base\InvalidCallException;
+use Exception;
+use RuntimeException;
+use yii\base\Model;
 
 /**
  * Class Script
  * @package vr\core
  */
-class Script extends \yii\base\Model
+class Script extends Model
 {
-    /**
-     * @var bool
-     */
-    public $isExecuted;
-    /**
-     * @var bool
-     */
-    public $oneTimeExecution = true;
-
     /**
      * @var bool
      */
@@ -37,14 +30,10 @@ class Script extends \yii\base\Model
 
     /**
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function execute(): bool
     {
-        if ($this->isExecuted && $this->oneTimeExecution) {
-            throw new InvalidCallException('This script cannot be executed more than once');
-        }
-
         try {
             if (!$this->validate()) {
                 throw new ErrorsException($this->errors);
@@ -52,8 +41,6 @@ class Script extends \yii\base\Model
 
             // This method especially returns void
             $this->onExecute();
-
-            $this->isExecuted = true;
 
             if ($this->hasErrors()) {
                 throw new ErrorsException($this->errors);
@@ -73,7 +60,7 @@ class Script extends \yii\base\Model
      */
     protected function onExecute()
     {
-        throw new \RuntimeException(get_called_class() . '::onExecute is not implemented');
+        throw new RuntimeException(get_called_class() . '::onExecute is not implemented');
     }
 
     /**
@@ -94,13 +81,5 @@ class Script extends \yii\base\Model
     public function fields()
     {
         return [];
-    }
-
-    /**
-     * @return bool
-     */
-    public function getIsExecuted(): bool
-    {
-        return $this->isExecuted;
     }
 }
