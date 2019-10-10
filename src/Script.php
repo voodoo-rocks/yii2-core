@@ -8,7 +8,6 @@
 
 namespace vr\core;
 
-use Exception;
 use RuntimeException;
 use yii\base\Model;
 
@@ -30,7 +29,7 @@ class Script extends Model
 
     /**
      * @return $this
-     * @throws Exception
+     * @throws ErrorsException
      */
     public function execute()
     {
