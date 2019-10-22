@@ -17,6 +17,11 @@ use yii\base\UserException;
 class ErrorsException extends UserException
 {
     /**
+     * @var array
+     */
+    public $data;
+
+    /**
      * @param array    $errors
      * @param int      $code
      * @param bool|int $preserveAttributes
@@ -35,6 +40,8 @@ class ErrorsException extends UserException
                 $messages[] = implode(', ', $attributeErrors);
             }
         }
+
+        $this->data = $errors;
 
         parent::__construct(implode(PHP_EOL, $messages), $code);
     }

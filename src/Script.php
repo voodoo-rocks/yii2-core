@@ -8,23 +8,15 @@
 
 namespace vr\core;
 
-use yii\base\InvalidCallException;
+use RuntimeException;
+use yii\base\Model;
 
 /**
  * Class Script
  * @package vr\core
  */
-class Script extends \yii\base\Model
+class Script extends Model
 {
-    /**
-     * @var bool
-     */
-    public $isExecuted;
-    /**
-     * @var bool
-     */
-    public $oneTimeExecution = true;
-
     /**
      * @var bool
      */
@@ -36,15 +28,11 @@ class Script extends \yii\base\Model
     protected $returnCode;
 
     /**
-     * @return bool
-     * @throws \Exception
+     * @return $this
+     * @throws ErrorsException
      */
-    public function execute(): bool
+    public function execute()
     {
-        if ($this->isExecuted && $this->oneTimeExecution) {
-            throw new InvalidCallException('This script cannot be executed more than once');
-        }
-
         try {
             if (!$this->validate()) {
                 throw new ErrorsException($this->errors);
@@ -53,8 +41,6 @@ class Script extends \yii\base\Model
             // This method especially returns void
             $this->onExecute();
 
-            $this->isExecuted = true;
-
             if ($this->hasErrors()) {
                 throw new ErrorsException($this->errors);
             }
@@ -62,18 +48,16 @@ class Script extends \yii\base\Model
             if ($this->throwExceptionOnError) {
                 throw $e;
             }
-
-            return false;
         }
 
-        return true;
+        return $this;
     }
 
     /**
      */
     protected function onExecute()
     {
-        throw new \RuntimeException(get_called_class() . '::onExecute is not implemented');
+        throw new RuntimeException(get_called_class() . '::onExecute is not implemented');
     }
 
     /**
@@ -89,10 +73,10 @@ class Script extends \yii\base\Model
     }
 
     /**
-     * @return bool
+     * @return array
      */
-    public function getIsExecuted(): bool
+    public function fields()
     {
-        return $this->isExecuted;
+        return [];
     }
 }
