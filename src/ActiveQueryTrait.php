@@ -89,9 +89,14 @@ trait ActiveQueryTrait
     /**
      * @return self
      */
-    public function random()
+    public function random($limit = null)
     {
         /** @var self $this */
+
+        if ($limit !== null) {
+            $this->limit($limit);
+        }
+
         return $this->orderBy('rand()');
     }
 
