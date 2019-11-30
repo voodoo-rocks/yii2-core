@@ -8,7 +8,11 @@
 
 namespace vr\core\validators;
 
+use Yii;
 use yii\base\DynamicModel;
+use yii\base\InvalidConfigException;
+use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use yii\validators\Validator;
 
 /**
@@ -40,15 +44,15 @@ class NestedValidator extends Validator
     {
         parent::init();
         if ($this->message === null) {
-            $this->message = \Yii::t('yii', '{attribute} is invalid.');
+            $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
     }
 
     /**
-     * @param \yii\base\Model $model
-     * @param string          $attribute
+     * @param Model $model
+     * @param string $attribute
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function validateAttribute($model, $attribute)
     {
@@ -63,6 +67,16 @@ class NestedValidator extends Validator
         // Add attributes missing in the model but mentioned in rules
         foreach ($this->rules as $rule) {
             $ruleAttributes = is_array($rule[0]) ? $rule[0] : [$rule[0]];
+
+            $on = ArrayHelper::getValue($rule, 'on', []);
+            if ($on && is_string($on)) {
+                $on = [$on];
+            }
+
+            if ($on && !in_array($model->scenario, $on)) {
+                ArrayHelper::removeValue($this->rules, $rule);
+                continue;
+            }
 
             foreach ($ruleAttributes as $ruleAttribute) {
                 $attributes = $attributes + [
