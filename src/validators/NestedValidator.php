@@ -8,8 +8,8 @@
 
 namespace vr\core\validators;
 
+use vr\core\DynamicModel;
 use Yii;
-use yii\base\DynamicModel;
 use yii\base\InvalidConfigException;
 use yii\base\Model;
 use yii\helpers\ArrayHelper;
@@ -85,7 +85,10 @@ class NestedValidator extends Validator
             }
         }
 
-        $dynamic = DynamicModel::validateData($attributes, $this->rules);
+        $dynamic = DynamicModel::validateData($attributes, $this->rules, [
+            'scenario' => $model->scenario
+        ]);
+
         $model->addErrors($dynamic->errors);
 
         if ($this->objectize || $this->objectify) {
