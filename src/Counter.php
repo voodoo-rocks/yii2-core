@@ -41,6 +41,11 @@ class Counter extends Component
     const EVENT_TICK = 'event-tick';
 
     /**
+     *
+     */
+    const DEFAULT_TICK_EACH = 5;
+
+    /**
      * @var
      */
     private $_timestamp;
@@ -63,12 +68,16 @@ class Counter extends Component
     /**
      * Counter constructor.
      * @param $total
+     * @param int $tickEach
      */
-    public function __construct($total)
+    public function __construct($total, $tickEach = self::DEFAULT_TICK_EACH)
     {
         parent::__construct([]);
 
-        $this->_total = $total;
+        $this->_total    = $total;
+        $this->_tickEach = $tickEach;
+
+        $this->_timestamp = microtime(true);
     }
 
     /**
