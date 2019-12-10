@@ -78,6 +78,16 @@ class NestedValidator extends Validator
                 continue;
             }
 
+            $except = ArrayHelper::getValue($rule, 'except', []);
+            if ($except && is_string($except)) {
+                $except = [$except];
+            }
+
+            if ($except && in_array($model->scenario, $except)) {
+                ArrayHelper::removeValue($this->rules, $rule);
+                continue;
+            }
+
             foreach ($ruleAttributes as $ruleAttribute) {
                 $attributes = $attributes + [
                         $ruleAttribute => null,
