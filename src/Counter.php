@@ -90,6 +90,11 @@ class Counter extends Component
         $this->_tickEach  = $tickEach;
         $this->_timestamp = microtime(true);
 
+        $this->off(Counter::EVENT_TICK);
+        $this->on(Counter::EVENT_TICK, function (Event $event) {
+            echo $event->sender->log;
+        });
+
         return call_user_func($todo, $this);
     }
 
