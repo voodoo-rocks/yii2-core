@@ -86,6 +86,8 @@ class Counter extends Component
         $counter->launch(function (self $counter) use ($closure) {
             foreach (range(0, $counter->total - 1) as $i) {
                 call_user_func($closure, $i);
+
+                $counter->setProgress($i + 1);
             }
         });
     }
