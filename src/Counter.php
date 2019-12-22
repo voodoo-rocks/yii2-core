@@ -80,14 +80,22 @@ class Counter extends Component
         $this->_timestamp = microtime(true);
     }
 
+    public static function enumerate($total, callable $closure)
+    {
+        $counter = new self($total);
+        $counter->launch(function (self $counter) use ($closure) {
+            foreach (range(0, $counter->total - 1) as $i) {
+                call_user_func($closure, $i);
+            }
+        });
+    }
+
     /**
      * @param Closure $todo
-     * @param $tickEach
      * @return mixed
      */
-    public function launch(Closure $todo, $tickEach)
+    public function launch(Closure $todo)
     {
-        $this->_tickEach  = $tickEach;
         $this->_timestamp = microtime(true);
 
         $this->off(Counter::EVENT_TICK);
