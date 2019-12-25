@@ -80,9 +80,9 @@ class Counter extends Component
         $this->_timestamp = microtime(true);
     }
 
-    public static function enumerate($total, callable $closure)
+    public static function enumerate($total, callable $closure, $tick = self::DEFAULT_TICK_EACH)
     {
-        $counter = new self($total);
+        $counter = new self($total, $tick);
         $counter->launch(function (self $counter) use ($closure) {
             foreach (range(0, $counter->total - 1) as $i) {
                 call_user_func($closure, $i);
@@ -115,7 +115,7 @@ class Counter extends Component
     {
         $this->_current = $current;
 
-        if ($current && $current % $this->_tickEach == 0) {
+        if ($this->_tickEach != -1 && $current && $current % $this->_tickEach == 0) {
             $this->trigger(self::EVENT_TICK, new Event([
                 'sender' => $this
             ]));
