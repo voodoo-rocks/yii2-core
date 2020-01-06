@@ -24,16 +24,16 @@ class FileBeingUploaded extends BaseObject implements IDisposable
     private $_handle;
 
     /**
-     * @param string $base64
+     * @param string $content
      * @param string|null $extension
      * @return self
      */
-    public static function fromContent(string $base64, string $extension = null)
+    public static function fromContent(string $content, string $extension = null)
     {
         $instance = new FileBeingUploaded();
         $instance->generateFileName($extension);
 
-        file_put_contents($instance->_filename, $base64);
+        file_put_contents($instance->_filename, $content);
         return $instance;
     }
 
