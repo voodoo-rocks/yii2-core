@@ -80,6 +80,11 @@ class Counter extends Component
         $this->_timestamp = microtime(true);
     }
 
+    /**
+     * @param $total
+     * @param callable $closure
+     * @param int $tick
+     */
     public static function enumerate($total, callable $closure, $tick = self::DEFAULT_TICK_EACH)
     {
         $counter = new self($total, $tick);
