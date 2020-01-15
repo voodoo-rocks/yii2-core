@@ -28,14 +28,13 @@ class NestedValidator extends Validator
 
     /**
      * @var bool
-     * @deprecated
      */
-    public $objectize = false;
+    public $objectify = false;
 
     /**
      * @var bool
      */
-    public $objectify = false;
+    public $allowArrays = false;
 
     /**
      * @inheritdoc
@@ -56,14 +55,30 @@ class NestedValidator extends Validator
      */
     public function validateAttribute($model, $attribute)
     {
-        $attributes = $model->$attribute;
+        $toValidate = $model->$attribute;
 
-        if (!is_array($attributes)) {
+        if (!is_array($toValidate)) {
             $this->addError($model, $attribute, $this->message, []);
-
             return;
         }
 
+        if ($this->allowArrays && ArrayHelper::isIndexed($toValidate)) {
+            foreach ($toValidate as $item) {
+                $this->validateItem($model, $attribute, $item);
+            }
+        } else {
+            $this->validateItem($model, $attribute, $toValidate);
+        }
+    }
+
+    /**
+     * @param $model
+     * @param $attribute
+     * @param array $attributes
+     * @throws InvalidConfigException
+     */
+    protected function validateItem(Model $model, $attribute, array $attributes): void
+    {
         // Add attributes missing in the model but mentioned in rules
         foreach ($this->rules as $rule) {
             $ruleAttributes = is_array($rule[0]) ? $rule[0] : [$rule[0]];
@@ -101,7 +116,7 @@ class NestedValidator extends Validator
 
         $model->addErrors($dynamic->errors);
 
-        if ($this->objectize || $this->objectify) {
+        if ($this->objectify) {
             $model->$attribute = (object)$model->$attribute;
         }
     }
