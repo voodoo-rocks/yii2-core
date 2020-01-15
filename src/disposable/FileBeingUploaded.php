@@ -30,7 +30,7 @@ class FileBeingUploaded extends BaseObject implements IDisposable
      */
     public static function fromContent(string $content, string $extension = null)
     {
-        $instance = new FileBeingUploaded();
+        $instance = new self();
         $instance->generateFileName($extension);
 
         file_put_contents($instance->_filename, $content);
@@ -40,7 +40,7 @@ class FileBeingUploaded extends BaseObject implements IDisposable
     /**
      * @param $extension
      */
-    private function generateFileName($extension)
+    protected function generateFileName($extension)
     {
         $filename        = uniqid(time());
         $this->_filename = Yii::getAlias("@runtime/{$filename}.{$extension}");
