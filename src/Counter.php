@@ -41,6 +41,11 @@ class Counter extends Component
     const EVENT_TICK = 'event-tick';
 
     /**
+     *
+     */
+    const DEFAULT_TICK_EACH = 5;
+
+    /**
      * @var
      */
     private $_timestamp;
@@ -63,23 +68,47 @@ class Counter extends Component
     /**
      * Counter constructor.
      * @param $total
+     * @param int $tickEach
      */
-    public function __construct($total)
+    public function __construct($total, $tickEach = self::DEFAULT_TICK_EACH)
     {
         parent::__construct([]);
 
-        $this->_total = $total;
+        $this->_total    = $total;
+        $this->_tickEach = $tickEach;
+
+        $this->_timestamp = microtime(true);
+    }
+
+    /**
+     * @param $total
+     * @param callable $closure
+     * @param int $tick
+     */
+    public static function enumerate($total, callable $closure, $tick = self::DEFAULT_TICK_EACH)
+    {
+        $counter = new self($total, $tick);
+        $counter->launch(function (self $counter) use ($closure) {
+            foreach (range(0, $counter->total - 1) as $i) {
+                call_user_func($closure, $i);
+
+                $counter->setProgress($i + 1);
+            }
+        });
     }
 
     /**
      * @param Closure $todo
-     * @param $tickEach
      * @return mixed
      */
-    public function launch(Closure $todo, $tickEach)
+    public function launch(Closure $todo)
     {
-        $this->_tickEach  = $tickEach;
         $this->_timestamp = microtime(true);
+
+        $this->off(Counter::EVENT_TICK);
+        $this->on(Counter::EVENT_TICK, function (Event $event) {
+            echo $event->sender->log;
+        });
 
         return call_user_func($todo, $this);
     }
@@ -91,7 +120,7 @@ class Counter extends Component
     {
         $this->_current = $current;
 
-        if ($current && $current % $this->_tickEach == 0) {
+        if ($this->_tickEach != -1 && $current && $current % $this->_tickEach == 0) {
             $this->trigger(self::EVENT_TICK, new Event([
                 'sender' => $this
             ]));
