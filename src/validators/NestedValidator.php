@@ -8,7 +8,11 @@
 
 namespace vr\core\validators;
 
-use yii\base\DynamicModel;
+use vr\core\DynamicModel;
+use Yii;
+use yii\base\InvalidConfigException;
+use yii\base\Model;
+use yii\helpers\ArrayHelper;
 use yii\validators\Validator;
 
 /**
@@ -24,14 +28,13 @@ class NestedValidator extends Validator
 
     /**
      * @var bool
-     * @deprecated
      */
-    public $objectize = false;
+    public $objectify = false;
 
     /**
      * @var bool
      */
-    public $objectify = false;
+    public $allowArrays = false;
 
     /**
      * @inheritdoc
@@ -40,29 +43,65 @@ class NestedValidator extends Validator
     {
         parent::init();
         if ($this->message === null) {
-            $this->message = \Yii::t('yii', '{attribute} is invalid.');
+            $this->message = Yii::t('yii', '{attribute} is invalid.');
         }
     }
 
     /**
-     * @param \yii\base\Model $model
-     * @param string          $attribute
+     * @param Model $model
+     * @param string $attribute
      *
-     * @throws \yii\base\InvalidConfigException
+     * @throws InvalidConfigException
      */
     public function validateAttribute($model, $attribute)
     {
-        $attributes = $model->$attribute;
+        $toValidate = $model->$attribute;
 
-        if (!is_array($attributes)) {
+        if (!is_array($toValidate)) {
             $this->addError($model, $attribute, $this->message, []);
-
             return;
         }
 
+        if ($this->allowArrays && ArrayHelper::isIndexed($toValidate)) {
+            foreach ($toValidate as $item) {
+                $this->validateItem($model, $attribute, $item);
+            }
+        } else {
+            $this->validateItem($model, $attribute, $toValidate);
+        }
+    }
+
+    /**
+     * @param $model
+     * @param $attribute
+     * @param array $attributes
+     * @throws InvalidConfigException
+     */
+    protected function validateItem(Model $model, $attribute, array $attributes): void
+    {
         // Add attributes missing in the model but mentioned in rules
         foreach ($this->rules as $rule) {
             $ruleAttributes = is_array($rule[0]) ? $rule[0] : [$rule[0]];
+
+            $on = ArrayHelper::getValue($rule, 'on', []);
+            if ($on && is_string($on)) {
+                $on = [$on];
+            }
+
+            if ($on && !in_array($model->scenario, $on)) {
+                ArrayHelper::removeValue($this->rules, $rule);
+                continue;
+            }
+
+            $except = ArrayHelper::getValue($rule, 'except', []);
+            if ($except && is_string($except)) {
+                $except = [$except];
+            }
+
+            if ($except && in_array($model->scenario, $except)) {
+                ArrayHelper::removeValue($this->rules, $rule);
+                continue;
+            }
 
             foreach ($ruleAttributes as $ruleAttribute) {
                 $attributes = $attributes + [
@@ -71,10 +110,13 @@ class NestedValidator extends Validator
             }
         }
 
-        $dynamic = DynamicModel::validateData($attributes, $this->rules);
+        $dynamic = DynamicModel::validateData($attributes, $this->rules, [
+            'scenario' => $model->scenario
+        ]);
+
         $model->addErrors($dynamic->errors);
 
-        if ($this->objectize || $this->objectify) {
+        if ($this->objectify) {
             $model->$attribute = (object)$model->$attribute;
         }
     }
