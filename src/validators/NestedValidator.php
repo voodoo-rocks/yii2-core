@@ -33,8 +33,14 @@ class NestedValidator extends Validator
 
     /**
      * @var bool
+     * @deprecated
      */
     public $allowArrays = false;
+
+    /**
+     * @var bool
+     */
+    public $allowArray = false;
 
     /**
      * @inheritdoc
@@ -62,7 +68,7 @@ class NestedValidator extends Validator
             return;
         }
 
-        if ($this->allowArrays && ArrayHelper::isIndexed($toValidate)) {
+        if (($this->allowArray || $this->allowArrays) && ArrayHelper::isIndexed($toValidate)) {
             foreach ($toValidate as $item) {
                 $this->validateItem($model, $attribute, $item);
             }

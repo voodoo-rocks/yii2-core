@@ -22,23 +22,15 @@ class ErrorsException extends UserException
     public $data;
 
     /**
-     * @param array    $errors
-     * @param int      $code
-     * @param bool|int $preserveAttributes
+     * @param array $errors
+     * @param int $code
      */
-    public function __construct(array $errors, $code = 0, $preserveAttributes = YII_DEBUG)
+    public function __construct(array $errors, $code = 0)
     {
         $messages = [];
 
         foreach ($errors as $attribute => $attributeErrors) {
-            if ($preserveAttributes) {
-                $messages[] = implode(': ', [
-                    'attribute' => $attribute,
-                    'message'   => implode(', ', $attributeErrors),
-                ]);
-            } else {
-                $messages[] = implode(', ', $attributeErrors);
-            }
+            $messages[] = implode(', ', $attributeErrors);
         }
 
         $this->data = $errors;
