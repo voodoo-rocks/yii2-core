@@ -16,7 +16,12 @@ class DayOfWeekValidator extends Validator
     /**
      *
      */
-    const INVALID_DAY_OF_WEEK = 'Invalid day of week';
+    const INVALID_DAY_OF_WEEK = 'Invalid day of week. It must be one of {days}';
+
+    /**
+     * @var string
+     */
+    public $message = self::INVALID_DAY_OF_WEEK;
 
     /**
      * @var string[]
@@ -38,7 +43,7 @@ class DayOfWeekValidator extends Validator
     protected function validateValue($value)
     {
         if (!in_array($value, $this->daysOfWeek)) {
-            return [Yii::t('app', $this->message), []];
+            return [Yii::t('app', $this->message), ['days' => implode(',', $this->daysOfWeek)]];
         }
     }
 }
