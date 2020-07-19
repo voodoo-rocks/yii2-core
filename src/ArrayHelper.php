@@ -31,4 +31,19 @@ class ArrayHelper extends BaseArrayHelper
 
         return $result;
     }
+
+    /**
+     * @param $items
+     * @param $map
+     * @return array
+     */
+    public static function typecast($items, $map)
+    {
+        return self::getColumn($items, function (array $item) use ($map) {
+            foreach ($map as $attribute => $type) {
+                settype($item[$attribute], $type);
+            }
+            return $item;
+        });
+    }
 }
