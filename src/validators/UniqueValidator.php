@@ -5,10 +5,10 @@ namespace vr\core\validators;
 
 
 /**
- * Class ExistValidator
+ * Class UniqueValidator
  * @package vr\core\validators
  */
-class ExistValidator extends \yii\validators\ExistValidator
+class UniqueValidator extends \yii\validators\UniqueValidator
 {
     use CustomStatusValidatorTrait;
 
