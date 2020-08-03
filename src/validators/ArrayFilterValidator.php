@@ -15,6 +15,7 @@ use yii\validators\Validator;
 /**
  * Class ArrayFilterValidator
  * @package vr\core\validators
+ * @deprecated
  */
 class ArrayFilterValidator extends Validator
 {
