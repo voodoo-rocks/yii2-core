@@ -141,6 +141,10 @@ class HttpCode
     /**
      *
      */
+    const LOGIN_TIME_OUT = 440;
+    /**
+     *
+     */
     const INTERNAL_SERVER_ERROR = 500;
     /**
      *
