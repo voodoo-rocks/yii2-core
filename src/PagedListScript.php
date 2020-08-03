@@ -22,4 +22,20 @@ class PagedListScript extends Script
      * @var int
      */
     public $offset;
+
+    /**
+     * @var
+     */
+    public $sort;
+
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return array_merge(parent::rules(), [
+            [['offset', 'limit'], 'number'],
+            ['soft', 'trim']
+        ]);
+    }
 }
