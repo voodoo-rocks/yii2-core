@@ -13,6 +13,7 @@ use yii\helpers\ArrayHelper;
 /**
  * Trait ArrayFilterTrait
  * @package vr\core\validators
+ * @deprecated
  */
 trait ArrayFilterTrait
 {
