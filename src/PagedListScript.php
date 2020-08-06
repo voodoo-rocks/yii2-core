@@ -35,7 +35,7 @@ class PagedListScript extends Script
     {
         return array_merge(parent::rules(), [
             [['offset', 'limit'], 'number'],
-            ['soft', 'trim']
+            ['sort', 'trim']
         ]);
     }
 }
