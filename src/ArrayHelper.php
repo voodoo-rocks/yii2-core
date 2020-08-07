@@ -41,7 +41,11 @@ class ArrayHelper extends BaseArrayHelper
     {
         return self::getColumn($items, function (array $item) use ($map) {
             foreach ($map as $attribute => $type) {
-                settype($item[$attribute], $type);
+                $params = explode(',', $type);
+                if (@$params[1]) {
+                    $item[$attribute] = sprintf(@$params[1], $item[$attribute]);
+                }
+                settype($item[$attribute], $params[0]);
             }
             return $item;
         });

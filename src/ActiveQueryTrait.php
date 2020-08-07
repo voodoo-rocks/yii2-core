@@ -2,9 +2,13 @@
 
 namespace vr\core;
 
+use Exception;
+use RuntimeException;
+use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\db\Command;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -19,7 +23,7 @@ trait ActiveQueryTrait
     private $_forUpdate;
 
     /**
-     * @return self
+     * @return ActiveRecord
      */
     public function first()
     {
@@ -27,14 +31,13 @@ trait ActiveQueryTrait
 
         $primaryKey = call_user_func([$this->modelClass, 'primaryKey']);
 
-        /** @noinspection PhpUndefinedMethodInspection */
         return $this->orderBy([
             $primaryKey[0] => SORT_ASC,
         ])->one();
     }
 
     /**
-     * @return self
+     * @return ActiveRecord
      */
     public function last()
     {
@@ -42,7 +45,6 @@ trait ActiveQueryTrait
 
         $primaryKey = call_user_func([$this->modelClass, 'primaryKey']);
 
-        /** @noinspection PhpUndefinedMethodInspection */
         return $this->orderBy([
             $primaryKey[0] => SORT_DESC,
         ])->one();
@@ -51,7 +53,7 @@ trait ActiveQueryTrait
     /**
      * @param $condition
      *
-     * @return self
+     * @return self|ActiveQuery
      * @throws InvalidConfigException
      */
     public function identifiedBy($condition)
@@ -87,9 +89,11 @@ trait ActiveQueryTrait
     }
 
     /**
+     * @param int $limit
      * @return self
+     * @throws Exception
      */
-    public function random($limit = null)
+    public function random($limit = 1)
     {
         /** @var self $this */
 
@@ -97,13 +101,22 @@ trait ActiveQueryTrait
             $this->limit($limit);
         }
 
-        return $this->orderBy('rand()');
+        $expression = ArrayHelper::getValue([
+            'mysql' => 'rand()',
+            'pgsql' => 'random()'
+        ], Yii::$app->db->driverName);
+
+        if (!$expression) {
+            throw new RuntimeException(Yii::$app->db->driverName . ' is not supported for this command');
+        }
+
+        return $this->orderBy($expression);
     }
 
     /**
      * @param null $db
      *
-     * @return \yii\db\Command
+     * @return Command
      */
     public function createCommand($db = null)
     {
