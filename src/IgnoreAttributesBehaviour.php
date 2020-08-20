@@ -13,6 +13,7 @@ use yii\base\Behavior;
 /**
  * Class IgnoreAttributesBehaviour
  * @package vr\api\components
+ * @deprecated
  */
 class IgnoreAttributesBehaviour extends Behavior
 {
