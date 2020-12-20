@@ -5,6 +5,7 @@ namespace vr\core;
 /**
  * Class PagedListScript
  * @package vr\core
+ * @property array $orderBy
  */
 class PagedListScript extends Script
 {
@@ -37,5 +38,40 @@ class PagedListScript extends Script
             [['offset', 'limit'], 'number'],
             ['sort', 'trim']
         ]);
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    protected function getOrderBy()
+    {
+        if (!$this->sort) {
+            return [];
+        }
+
+        $params    = explode('+', $this->sort);
+        $attribute = Inflector::variablize(ArrayHelper::getValue($params, 0));
+
+        if ($this->orderable() && !in_array($attribute, $this->orderable())) {
+            return [];
+        }
+
+        $direction = ArrayHelper::getValue([
+            'asc'  => SORT_ASC,
+            'desc' => SORT_DESC,
+        ], ArrayHelper::getValue($params, 1, 'asc'));
+
+        return [
+            $attribute => $direction
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function orderable()
+    {
+        return [];
     }
 }

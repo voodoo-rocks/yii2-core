@@ -17,7 +17,7 @@ trait CustomStatusValidatorTrait
     /**
      * @var int
      */
-    public $statusCode = self::DEFAULT_STATUS_CODE;
+    public $statusCode = 400;
 
     /**
      * @param Model $model
