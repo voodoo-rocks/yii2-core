@@ -30,7 +30,10 @@ trait CustomStatusValidatorTrait
         parent::validateAttribute($model, $attribute);
 
         if ($model->hasErrors($attribute) && $errors !== $model->getErrors($attribute)) {
-            throw new HttpException($this->statusCode, Yii::t('app', $this->message, ['attribute' => $attribute]));
+            throw new HttpException($this->statusCode, Yii::t('app', $this->message, [
+                'attribute' => $attribute,
+                'value'     => $model->$attribute
+            ]));
         }
     }
 
