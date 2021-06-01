@@ -24,7 +24,7 @@ class TransactionalBehavior extends ActionFilter
     /**
      * @var Transaction|null
      */
-    private ?Transaction  $_transaction;
+    private ?Transaction $_transaction;
 
     /**
      * @param Action $action
@@ -32,8 +32,10 @@ class TransactionalBehavior extends ActionFilter
      */
     public function beforeAction($action)
     {
-        $this->_transaction = Yii::$app->db->transaction ?: Yii::$app->db->beginTransaction($this->isolationLevel);
-
+        if (Yii::$app->get('db', false)) {
+            $this->_transaction = Yii::$app->db->transaction ?: Yii::$app->db->beginTransaction($this->isolationLevel);
+        }
+        
         return parent::beforeAction($action);
     }
 
