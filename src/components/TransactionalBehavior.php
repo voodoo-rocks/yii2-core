@@ -24,7 +24,7 @@ class TransactionalBehavior extends ActionFilter
     /**
      * @var Transaction|null
      */
-    private ?Transaction $_transaction;
+    private ?Transaction $_transaction = null;
 
     /**
      * @param Action $action
