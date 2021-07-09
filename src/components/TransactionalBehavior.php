@@ -7,6 +7,7 @@ namespace vr\core\components;
 use Yii;
 use yii\base\Action;
 use yii\base\ActionFilter;
+use yii\base\InvalidConfigException;
 use yii\db\Exception;
 use yii\db\Transaction;
 
@@ -22,20 +23,31 @@ class TransactionalBehavior extends ActionFilter
     public ?string $isolationLevel = null;
 
     /**
-     * @var Transaction|null
+     * @var string|array
      */
-    private ?Transaction $_transaction = null;
+    public $db = 'db';
+
+    /**
+     * @var Transaction[]
+     */
+    private array $_transactions = [];
 
     /**
      * @param Action $action
      * @return bool
+     * @throws InvalidConfigException
      */
-    public function beforeAction($action)
+    public function beforeAction($action): bool
     {
-        if (Yii::$app->get('db', false)) {
-            $this->_transaction = Yii::$app->db->transaction ?: Yii::$app->db->beginTransaction($this->isolationLevel);
+        $configs = is_array($this->db) ? $this->db : [$this->db];
+
+        foreach ($configs as $config) {
+            if (Yii::$app->get($config, false)) {
+                $this->_transactions[] = Yii::$app->get($config)->transaction ?: Yii::$app->get($config)->beginTransaction($this->isolationLevel);
+            }
         }
-        
+
+
         return parent::beforeAction($action);
     }
 
@@ -47,8 +59,9 @@ class TransactionalBehavior extends ActionFilter
      */
     public function afterAction($action, $result)
     {
-        if ($this->_transaction) {
-            $this->_transaction->commit();
+        if ($this->_transactions) {
+            foreach ($this->_transactions as $transaction)
+                $transaction->commit();
         }
 
         return parent::afterAction($action, $result);
