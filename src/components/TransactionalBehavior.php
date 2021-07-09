@@ -13,7 +13,8 @@ use yii\db\Transaction;
 
 /**
  * Class TransactionalBehavior
- * @package vr\core\components
+ * @package vr\core\components]
+ * @deprecated
  */
 class TransactionalBehavior extends ActionFilter
 {
