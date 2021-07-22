@@ -19,7 +19,7 @@ class ArrayHelper extends BaseArrayHelper
      * @param string $value
      * @return array
      */
-    public static function group($associative, $key = 'key', $value = 'items')
+    public static function group($associative, string $key = 'key', string $value = 'items'): array
     {
         $result = [];
 
@@ -34,27 +34,42 @@ class ArrayHelper extends BaseArrayHelper
     }
 
     /**
-     * @param $items
+     * @param array $items
      * @param $map
      * @return array
      */
-    public static function typecast(array $items, $map)
+    public static function typecast(array $items, $map): array
     {
+        if (ArrayHelper::isAssociative($items)) {
+            return self::typecastAttributes($map, $items);
+        }
+
         return self::getColumn($items, function (array $item) use ($map) {
-            foreach ($map as $attribute => $type) {
-                $params = explode(',', $type);
-                if (@$params[1]) {
-                    $item[$attribute] = sprintf(@$params[1], $item[$attribute]);
-                }
-                settype($item[$attribute], $params[0]);
-            }
-            return $item;
+            return self::typecastAttributes($map, $item);
         });
+    }
+
+    /**
+     * @param $map
+     * @param array $item
+     * @return array
+     */
+    protected static function typecastAttributes($map, array $item): array
+    {
+        foreach ($map as $attribute => $type) {
+            $params = explode(',', $type);
+            if (@$params[1]) {
+                $item[$attribute] = sprintf(@$params[1], $item[$attribute]);
+            }
+            settype($item[$attribute], $params[0]);
+        }
+        return $item;
     }
 
     /**
      * @param array $items
      * @param string | array $attributes
+     * @return int|mixed
      * @throws Exception
      */
     public static function sum(array $items, $attributes)
