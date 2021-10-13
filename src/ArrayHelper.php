@@ -16,10 +16,10 @@ class ArrayHelper extends BaseArrayHelper
     /**
      * @param $associative
      * @param string $key
-     * @param string $value
+     * @param string|callable $value
      * @return array
      */
-    public static function group($associative, string $key = 'key', string|callable $value = 'items'): array
+    public static function group($associative, string $key = 'key', $value = 'items'): array
     {
         $result = [];
 
