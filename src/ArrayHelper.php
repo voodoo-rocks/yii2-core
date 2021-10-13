@@ -19,15 +19,15 @@ class ArrayHelper extends BaseArrayHelper
      * @param string $value
      * @return array
      */
-    public static function group($associative, string $key = 'key', string $value = 'items'): array
+    public static function group($associative, string $key = 'key', string|callable $value = 'items'): array
     {
         $result = [];
 
         foreach ($associative as $k => $v) {
+            $pair     = is_callable($value) ? call_user_func($value, $v) : [$value => $v];
             $result[] = [
-                $key   => $k,
-                $value => $v,
-            ];
+                    $key => $k,
+                ] + $pair;
         }
 
         return $result;
