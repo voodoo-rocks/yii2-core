@@ -3,8 +3,6 @@
 namespace vr\core;
 
 use Exception;
-use RuntimeException;
-use Yii;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
@@ -56,7 +54,7 @@ trait ActiveQueryTrait
      * @return self|ActiveQuery
      * @throws InvalidConfigException
      */
-    public function identifiedBy($condition)
+    public function identifiedBy($condition): self
     {
         /** @var ActiveQuery $this */
 
@@ -81,7 +79,7 @@ trait ActiveQueryTrait
      *
      * @return $this
      */
-    public function forUpdate($forUpdate = true)
+    public function forUpdate($forUpdate = true): self
     {
         $this->_forUpdate = $forUpdate;
 
@@ -89,28 +87,13 @@ trait ActiveQueryTrait
     }
 
     /**
-     * @param int $limit
      * @return self
      * @throws Exception
      */
-    public function random($limit = 1)
+    public function random(): self
     {
-        /** @var self $this */
-
-        if ($limit !== null) {
-            $this->limit($limit);
-        }
-
-        $expression = ArrayHelper::getValue([
-            'mysql' => 'rand()',
-            'pgsql' => 'random()'
-        ], Yii::$app->db->driverName);
-
-        if (!$expression) {
-            throw new RuntimeException(Yii::$app->db->driverName . ' is not supported for this command');
-        }
-
-        return $this->orderBy($expression);
+        $count = call_user_func([$this->modelClass, 'find'])->count();
+        return $this->offset(rand(0, $count - 1))->limit(1);
     }
 
     /**
@@ -127,7 +110,6 @@ trait ActiveQueryTrait
         }
 
         if ($this->sql === null) {
-            /** @noinspection PhpParamsInspection */
             list($sql, $params) = $db->getQueryBuilder()->build($this);
         } else {
             $sql    = $this->sql;
