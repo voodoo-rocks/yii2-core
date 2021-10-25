@@ -92,7 +92,7 @@ trait ActiveQueryTrait
      */
     public function random(): self
     {
-        $count = call_user_func([$this->modelClass, 'find'])->count();
+        $count = $this->count();
         return $this->offset(rand(0, $count - 1))->limit(1);
     }
 
