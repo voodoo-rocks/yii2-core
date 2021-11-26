@@ -24,7 +24,7 @@ class ArrayHelper extends BaseArrayHelper
         $result = [];
 
         foreach ($associative as $k => $v) {
-            $pair     = is_callable($value) ? call_user_func($value, $v) : [$value => $v];
+            $pair     = !is_string($value) ? call_user_func($value, $v) : [$value => $v];
             $result[] = [
                     $key => $k,
                 ] + $pair;
