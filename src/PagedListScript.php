@@ -2,6 +2,9 @@
 
 namespace vr\core;
 
+use Exception;
+use yii\db\ActiveQuery;
+
 /**
  * Class PagedListScript
  * @package vr\core
@@ -41,8 +44,21 @@ class PagedListScript extends Script
     }
 
     /**
+     * @param ActiveQuery $query
+     * @param string|null $defaultOrder
+     * @return void
+     */
+    protected function applySortingToQuery(ActiveQuery $query, ?string $defaultOrder = null)
+    {
+        if ($this->sort = ($this->sort ?: $defaultOrder)) {
+            $sort = lcfirst(urldecode(Inflector::id2camel($this->sort)));
+            $query->addOrderBy("$sort");
+        }
+    }
+
+    /**
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     protected function getOrderBy()
     {
